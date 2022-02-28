@@ -1,1 +1,2 @@
 <h1>HOSPITAL-MANAGEMENT</h1>
+<pre *ngIf="authService.user$|async as user">{{user|json}}</pre>
