@@ -119,7 +119,7 @@ export class DialogsComponent {
   }
   ajaxRequest() {
     Swal.fire({
-      title: "Submit your Github username",
+      title: "Submit your Github email",
       input: "text",
       inputAttributes: {
         autocapitalize: "off",

@@ -13,11 +13,23 @@
             <div class="row">
               <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
                 <mat-form-field class="example-full-width" appearance="outline">
-                  <mat-label>Username</mat-label>
-                  <input matInput formControlName="username" required>
+                  <mat-label>First Name</mat-label>
+                  <input matInput formControlName="firstName" required>
                   <mat-icon matSuffix>face</mat-icon>
-                  <mat-error *ngIf="authForm.get('username').hasError('required')">
-                    Username is required
+                  <mat-error *ngIf="authForm.get('firstName').hasError('required')">
+                    First Name is required
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+                <mat-form-field class="example-full-width" appearance="outline">
+                  <mat-label>Last Name</mat-label>
+                  <input matInput formControlName="lastName">
+                  <mat-icon matSuffix>face</mat-icon>
+                  <mat-error *ngIf="authForm.get('lastName').hasError('required')">
+                    Email is required
                   </mat-error>
                 </mat-form-field>
               </div>
@@ -26,10 +38,22 @@
               <div class="col-xl-12col-lg-12 col-md-12 col-sm-12 mb-2">
                 <mat-form-field class="example-full-width" appearance="outline">
                   <mat-label>Email</mat-label>
-                  <input matInput formControlName="email" required>
+                  <input matInput type="email" formControlName="email" required>
                   <mat-icon matSuffix>mail</mat-icon>
                   <mat-error *ngIf="authForm.get('email').hasError('required') || authForm.get('email').touched">
                     Please enter a valid email address
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12col-lg-12 col-md-12 col-sm-12 mb-2">
+                <mat-form-field class="example-full-width" appearance="outline">
+                  <mat-label>Mobile Number</mat-label>
+                  <input minlength="10" maxlength="10" type="tel" matInput formControlName="mobile" required>
+                  <mat-icon matSuffix>smartphone</mat-icon>
+                  <mat-error *ngIf="authForm.get('mobile').hasError('required') || authForm.get('mobile').touched">
+                    Please enter a valid Mobile Number
                   </mat-error>
                 </mat-form-field>
               </div>
@@ -76,17 +100,17 @@
           <h6 class="social-login-title">OR</h6>
           <ul class="list-unstyled social-icon mb-0 mt-3">
             <li class="list-inline-item"><a href="javascript:void(0)" class="rounded">
-                <i class="fab fa-google"></i>
-              </a></li>
+              <i class="fab fa-google"></i>
+            </a></li>
             <li class="list-inline-item"><a href="javascript:void(0)" class="rounded flex-c-m">
-                <i class="fab fa-facebook-f"></i>
-              </a></li>
+              <i class="fab fa-facebook-f"></i>
+            </a></li>
             <li class="list-inline-item"><a href="javascript:void(0)" class="rounded">
-                <i class="fab fa-twitter"></i>
-              </a></li>
+              <i class="fab fa-twitter"></i>
+            </a></li>
             <li class="list-inline-item"><a href="javascript:void(0)" class="rounded">
-                <i class="fab fa-linkedin-in"></i>
-              </a></li>
+              <i class="fab fa-linkedin-in"></i>
+            </a></li>
           </ul>
         </div>
       </div>

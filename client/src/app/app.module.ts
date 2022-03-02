@@ -16,20 +16,21 @@ import { MainLayoutComponent } from "./layout/app-layout/main-layout/main-layout
 import { fakeBackendProvider } from "./core/interceptor/fake-backend";
 import { ErrorInterceptor } from "./core/interceptor/error.interceptor";
 import { JwtInterceptor } from "./core/interceptor/jwt.interceptor";
-import { LocationStrategy, HashLocationStrategy } from "@angular/common";
+import { HashLocationStrategy, LocationStrategy } from "@angular/common";
 import {
-  PerfectScrollbarModule,
   PERFECT_SCROLLBAR_CONFIG,
   PerfectScrollbarConfigInterface,
+  PerfectScrollbarModule,
 } from "ngx-perfect-scrollbar";
-import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
+import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { ClickOutsideModule } from "ng-click-outside";
 import {
-  HttpClientModule,
   HTTP_INTERCEPTORS,
   HttpClient,
+  HttpClientModule,
 } from "@angular/common/http";
+import { TokenInterceptorService } from "./core/service/token-interceptor/token-interceptor.service";
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -41,43 +42,48 @@ export function createTranslateLoader(http: HttpClient): any {
 }
 
 @NgModule({
-    declarations: [
-        AppComponent,
-        HeaderComponent,
-        PageLoaderComponent,
-        SidebarComponent,
-        RightSidebarComponent,
-        AuthLayoutComponent,
-        MainLayoutComponent,
-    ],
-    imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        AppRoutingModule,
-        HttpClientModule,
-        PerfectScrollbarModule,
-        ClickOutsideModule,
-        TranslateModule.forRoot({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: createTranslateLoader,
-                deps: [HttpClient],
-            },
-        }),
-        // core & shared
-        CoreModule,
-        SharedModule,
-    ],
-    providers: [
-        { provide: LocationStrategy, useClass: HashLocationStrategy },
-        {
-            provide: PERFECT_SCROLLBAR_CONFIG,
-            useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG,
-        },
-        { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-        { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-        fakeBackendProvider,
-    ],
-    bootstrap: [AppComponent]
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    PageLoaderComponent,
+    SidebarComponent,
+    RightSidebarComponent,
+    AuthLayoutComponent,
+    MainLayoutComponent,
+  ],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    AppRoutingModule,
+    HttpClientModule,
+    PerfectScrollbarModule,
+    ClickOutsideModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: createTranslateLoader,
+        deps: [HttpClient],
+      },
+    }),
+    // core & shared
+    CoreModule,
+    SharedModule,
+  ],
+  providers: [
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
+    {
+      provide: PERFECT_SCROLLBAR_CONFIG,
+      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG,
+    },
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptorService,
+      multi: true,
+    },
+    fakeBackendProvider,
+  ],
+  bootstrap: [AppComponent],
 })
 export class AppModule {}
