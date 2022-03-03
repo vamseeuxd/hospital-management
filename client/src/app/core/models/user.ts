@@ -4,6 +4,7 @@ export class User {
   id: number;
   img: string;
   email: string;
+  mobile: string;
   password: string;
   firstName: string;
   lastName: string;

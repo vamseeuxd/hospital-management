@@ -74,7 +74,7 @@ export class SignupComponent implements OnInit {
       lastName: ["Sunkara"],
       email: [
         "vamsi.flex@gmail.com",
-        [Validators.required, Validators.email, Validators.minLength(5)],
+        [Validators.email, Validators.minLength(5)],
       ],
       mobile: [
         "9962266742",
@@ -116,12 +116,23 @@ export class SignupComponent implements OnInit {
           .subscribe(
             (value: IRegisterResponse) => {
               this._snackBar.open("User Created Successfully", "OK", {
-                duration: 3000,
+                duration: 5000,
               });
               this.router.navigate(["/admin/dashboard/main"]);
             },
             (error: HttpErrorResponse) => {
-              this._snackBar.open(error.error, "OK", { duration: 3000 });
+              debugger;
+              if (error && error.error) {
+                this._snackBar.open(error.error, "OK", { duration: 5000 });
+              } else {
+                this._snackBar.open(
+                  "Technical Error while Sign-Up, Please try again",
+                  "OK",
+                  {
+                    duration: 5000,
+                  }
+                );
+              }
             }
           );
       } else {

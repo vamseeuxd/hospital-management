@@ -1,14 +1,14 @@
 ﻿import { Injectable } from "@angular/core";
 import {
+  HTTP_INTERCEPTORS,
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
   HttpRequest,
   HttpResponse,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-  HTTP_INTERCEPTORS,
 } from "@angular/common/http";
 import { Observable, of, throwError } from "rxjs";
-import { delay, mergeMap, materialize, dematerialize } from "rxjs/operators";
+import { mergeMap } from "rxjs/operators";
 import { User } from "../models/user";
 import { Role } from "../models/role";
 
@@ -16,6 +16,7 @@ const users: User[] = [
   {
     id: 1,
     img: "assets/images/user/admin.jpg",
+    mobile: "9962266742",
     email: "admin@hospital.org",
     password: "admin@123",
     firstName: "Sarah",
@@ -26,6 +27,7 @@ const users: User[] = [
   {
     id: 2,
     img: "assets/images/user/doctor.jpg",
+    mobile: "9962266742",
     email: "doctor@hospital.org",
     password: "doctor@123",
     firstName: "Ashton",
@@ -36,6 +38,7 @@ const users: User[] = [
   {
     id: 3,
     img: "assets/images/user/patient.jpg",
+    mobile: "9962266742",
     email: "patient@hospital.org",
     password: "patient@123",
     firstName: "Cara",
@@ -78,6 +81,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
       return ok({
         id: user.id,
         img: user.img,
+        mobile: user.mobile,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
