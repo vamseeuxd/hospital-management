@@ -47,7 +47,7 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-xl-12col-lg-12 col-md-12 col-sm-12 mb-2">
+              <div class="col-xl-12col-lg-12 col-md-12 col-sm-12 mb-4">
                 <mat-form-field class="example-full-width" appearance="outline">
                   <mat-label>Mobile Number</mat-label>
                   <input minlength="10" maxlength="10" type="tel" matInput formControlName="mobile" required>
@@ -55,6 +55,7 @@
                   <mat-error *ngIf="authForm.get('mobile').hasError('required') || authForm.get('mobile').touched">
                     Please enter a valid Mobile Number
                   </mat-error>
+                  <mat-hint>We will send you a one-time password to this mobile number</mat-hint>
                 </mat-form-field>
               </div>
             </div>
@@ -97,7 +98,7 @@
               </button>
             </div>
           </form>
-          <h6 class="social-login-title">OR</h6>
+          <!--<h6 class="social-login-title">OR</h6>
           <ul class="list-unstyled social-icon mb-0 mt-3">
             <li class="list-inline-item"><a href="javascript:void(0)" class="rounded">
               <i class="fab fa-google"></i>
@@ -111,7 +112,7 @@
             <li class="list-inline-item"><a href="javascript:void(0)" class="rounded">
               <i class="fab fa-linkedin-in"></i>
             </a></li>
-          </ul>
+          </ul>-->
         </div>
       </div>
     </div>

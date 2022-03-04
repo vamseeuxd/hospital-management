@@ -13,6 +13,8 @@ import { MatInputModule } from "@angular/material/input";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { SharedComponentsModule } from "../shared-components/shared-components.module";
+import { MatDialogModule } from "@angular/material/dialog";
 
 @NgModule({
   declarations: [
@@ -33,6 +35,8 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
     MatIconModule,
     MatButtonModule,
     MatSnackBarModule,
+    MatDialogModule,
+    SharedComponentsModule,
   ],
 })
 export class AuthenticationModule {}

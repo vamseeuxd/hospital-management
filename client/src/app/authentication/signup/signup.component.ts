@@ -5,6 +5,8 @@ import { MyAuthService } from "../../core/service/auth/my-auth.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { HttpErrorResponse } from "@angular/common/http";
 import { IRegisterResponse } from "../../core/service/auth.service";
+import { MatDialog } from "@angular/material/dialog";
+import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: "app-signup",
@@ -22,53 +24,13 @@ export class SignupComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
+    private dialogModel: MatDialog,
     public authService: MyAuthService,
+    private spinner: NgxSpinnerService,
     private _snackBar: MatSnackBar
-  ) {
-    console.log("---------------------------------------------------");
-    /*this.authService.user().subscribe(
-      (value1: any) => {
-        debugger;
-      },
-      (error) => {
-        debugger;
-      }
-    );*/
-    /*this.authService.login("vamsi.flex@gmail.com", "12345").subscribe(
-      (res: IRegisterResponse) => {
-        // debugger;
-        localStorage.setItem("token", res.token);
-        this.authService.user().subscribe((value1: any) => {
-          debugger;
-        });
-      },
-      (error: HttpErrorResponse) => {
-        alert(error.error.error);
-      }
-    );*/
-    /*this.authService
-      .register({
-        firstName: "Vamsee Kalyan",
-        lastName: "Sunkara",
-        email: "vamsi.flex@gmail.com",
-        password: "12345",
-      })
-      .subscribe(
-        (value: IRegisterResponse) => {
-          debugger;
-        },
-        (error: HttpErrorResponse) => {
-          alert(error.error);
-        }
-      );*/
-  }
+  ) {}
 
   ngOnInit() {
-    /*cpassword: "12345"
-        email: "vamsi.flex@gmail.com"
-        firstName: "Vamsee Kalyan"
-        lastName: "Sunkara"
-        password: "12345"*/
     this.authForm = this.formBuilder.group({
       firstName: ["Vamsee Kalyan", Validators.required],
       lastName: ["Sunkara"],
@@ -96,15 +58,15 @@ export class SignupComponent implements OnInit {
     return this.authForm.controls;
   }
 
-  onSubmit() {
+  async onSubmit() {
     this.submitted = true;
     // stop here if form is invalid
     if (this.authForm.invalid) {
       return;
     } else {
       if (this.authForm.value.cpassword === this.authForm.value.password) {
-        console.log(this.authForm.value);
-
+        await this.spinner.show("wait");
+        // await this.spinner.show("", { bdColor: "rgba(0, 0, 0, 1)" });
         this.authService
           .register({
             firstName: this.authForm.value.firstName,
@@ -114,14 +76,20 @@ export class SignupComponent implements OnInit {
             password: this.authForm.value.password,
           })
           .subscribe(
-            (value: IRegisterResponse) => {
-              this._snackBar.open("User Created Successfully", "OK", {
-                duration: 5000,
-              });
-              this.router.navigate(["/admin/dashboard/main"]);
+            async (value: IRegisterResponse) => {
+              await this.spinner.hide("wait");
+              /*this._snackBar.open("User Created Successfully", "OK", {
+                duration: 1000,
+              });*/
+              this.authService.openMobileOtpDialog(
+                "9962266742",
+                this.dialogModel,
+                this._snackBar
+              );
+              // this.router.navigate(["/admin/dashboard/main"]);
             },
-            (error: HttpErrorResponse) => {
-              debugger;
+            async (error: HttpErrorResponse) => {
+              await this.spinner.hide("wait");
               if (error && error.error) {
                 this._snackBar.open(error.error, "OK", { duration: 5000 });
               } else {
