@@ -30,8 +30,7 @@ export class MyAuthService {
   register(value: IRegister): Observable<IRegisterResponse> {
     return this.http.post<IRegisterResponse>(this._registerUrl, value).pipe(
       tap((value: IRegisterResponse) => {
-        this.userAction.next(value.user);
-        debugger;
+        // this.userAction.next(value.user);
       })
     );
   }
@@ -97,63 +96,70 @@ export class MyAuthService {
   openMobileOtpDialog(
     mobile: string,
     dialogModel: MatDialog,
-    _snackBar: MatSnackBar
+    _snackBar: MatSnackBar,
+    successMessage = "Mobile Number Validation Successful"
   ): void {
-    const dialogRef = dialogModel.open(OtpDialogComponent, {
-      width: "640px",
-      disableClose: true,
-    });
-    dialogRef.componentInstance.mobileNumber = mobile;
-    const sub1 = dialogRef.componentInstance.cancel.subscribe(async () => {
-      sub1.unsubscribe();
-      sub2.unsubscribe();
-      sub3.unsubscribe();
-      dialogRef.close();
-      await this._router.navigate(["/authentication/signin"]);
-    });
-    const sub2 = dialogRef.componentInstance.verify.subscribe(
-      async ({ mobile, mobileOtp }) => {
-        await this.spinner.show("wait");
-        const sub5 = this.verifyMobileOtp(mobile, mobileOtp)
-          .pipe(delay(1000))
-          .subscribe(
+    this.sendMobileVerificationOtp(mobile).subscribe((value) => {
+      console.log("sendMobileVerificationOtp", value);
+      const dialogRef = dialogModel.open(OtpDialogComponent, {
+        width: "640px",
+        disableClose: true,
+      });
+      dialogRef.componentInstance.mobileNumber = mobile;
+      const sub1 = dialogRef.componentInstance.cancel.subscribe(async () => {
+        sub1.unsubscribe();
+        sub2.unsubscribe();
+        sub3.unsubscribe();
+        dialogRef.close();
+        await this._router.navigate(["/authentication/signin"]);
+      });
+      const sub2 = dialogRef.componentInstance.verify.subscribe(
+        async ({ mobile, mobileOtp }) => {
+          await this.spinner.show("wait");
+          const sub5 = this.verifyMobileOtp(mobile, mobileOtp)
+            .pipe(delay(1000))
+            .subscribe(
+              async (value) => {
+                console.log(value);
+                sub1.unsubscribe();
+                sub2.unsubscribe();
+                sub3.unsubscribe();
+                sub5.unsubscribe();
+                dialogRef.close();
+                await this.spinner.hide("wait");
+                await this._router.navigate(["/authentication/signin"]);
+
+                _snackBar.open(successMessage, "OK", {
+                  duration: 5000,
+                });
+              },
+              async (error) => {
+                console.log(error);
+                _snackBar.open(error, "OK", { duration: 5000 });
+                sub5.unsubscribe();
+                await this.spinner.hide("wait");
+              }
+            );
+        }
+      );
+      const sub3 = dialogRef.componentInstance.resendOtp.subscribe(
+        async (mobile) => {
+          await this.spinner.show("wait");
+          const sub4 = this.sendMobileVerificationOtp(mobile).subscribe(
             async (value) => {
               console.log(value);
-              sub5.unsubscribe();
-              dialogRef.close();
+              sub4.unsubscribe();
               await this.spinner.hide("wait");
-              await this._router.navigate(["/authentication/signin"]);
-
-              _snackBar.open("Mobile Number Validation Successful", "OK", {
-                duration: 5000,
-              });
             },
             async (error) => {
               console.log(error);
               _snackBar.open(error, "OK", { duration: 5000 });
-              sub5.unsubscribe();
+              sub4.unsubscribe();
               await this.spinner.hide("wait");
             }
           );
-      }
-    );
-    const sub3 = dialogRef.componentInstance.resendOtp.subscribe(
-      async (mobile) => {
-        await this.spinner.show("wait");
-        const sub4 = this.sendMobileVerificationOtp(mobile).subscribe(
-          async (value) => {
-            console.log(value);
-            sub4.unsubscribe();
-            await this.spinner.hide("wait");
-          },
-          async (error) => {
-            console.log(error);
-            _snackBar.open(error, "OK", { duration: 5000 });
-            sub4.unsubscribe();
-            await this.spinner.hide("wait");
-          }
-        );
-      }
-    );
+        }
+      );
+    });
   }
 }

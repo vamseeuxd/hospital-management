@@ -52,7 +52,8 @@ export class ForgotPasswordComponent implements OnInit {
     this.authService.openMobileOtpDialog(
       this.authForm.value.mobile,
       this.dialogModel,
-      this._snackBar
+      this._snackBar,
+      "Your Password changed successfully, please to Login"
     );
     /*this.submitted = true;
     // stop here if form is invalid
