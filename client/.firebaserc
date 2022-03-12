@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "tat-clinic": {
+      "hosting": {
+        "cliniva": [
+          "tat-clinic"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "tat-clinic"
+  }
+}

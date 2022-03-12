@@ -33,7 +33,10 @@
               "crossvent",
               "apexcharts"
             ],
-            "assets": ["src/favicon.ico", "src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
             "styles": [
               "src/assets/scss/style.scss",
               "src/assets/scss/theme/all-themes.scss",
@@ -98,7 +101,20 @@
               "src/styles.scss"
             ],
             "scripts": [],
-            "assets": ["src/favicon.ico", "src/assets"]
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ]
+          }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "prerender": false,
+            "ssr": false,
+            "browserTarget": "cliniva:build:production",
+            "firebaseProject": "tat-clinic",
+            "firebaseHostingSite": "tat-clinic"
           }
         }
       }
