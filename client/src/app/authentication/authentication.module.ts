@@ -15,6 +15,7 @@ import {MatButtonModule} from "@angular/material/button";
 import {NgOtpInputModule} from 'ng-otp-input';
 import {MatDialogModule} from "@angular/material/dialog";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {MatSelectModule} from "@angular/material/select";
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
     MatIconModule,
     MatButtonModule,
     MatDialogModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatSelectModule
   ],
 })
 export class AuthenticationModule {

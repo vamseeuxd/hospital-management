@@ -33,7 +33,6 @@ export class OtpService {
     const dialogRef = dialogModel.open(OtpDialogComponent, {width: "640px", disableClose: true});
     dialogRef.componentInstance.mobileNumber = mobileNumber;
     const subscription = dialogRef.afterClosed().subscribe(value => {
-      console.log('Cloded the Mat-Dialog');
       subscription.unsubscribe();
       subscriptions.forEach(ref => ref.unsubscribe());
     });

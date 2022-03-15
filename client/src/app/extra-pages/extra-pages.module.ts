@@ -14,6 +14,12 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatTabsModule } from "@angular/material/tabs";
+import {MatSelectModule} from "@angular/material/select";
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MaterialFileInputModule} from "ngx-material-file-input";
+import {SharedComponentsModule} from "../shared-components/shared-components.module";
+import {MatDialogModule} from "@angular/material/dialog";
+
 @NgModule({
   declarations: [
     ProfileComponent,
@@ -24,6 +30,8 @@ import { MatTabsModule } from "@angular/material/tabs";
   ],
   imports: [
     CommonModule,
+    MatDialogModule,
+    SharedComponentsModule,
     ExtraPagesRoutingModule,
     FormsModule,
     ReactiveFormsModule,
@@ -34,6 +42,9 @@ import { MatTabsModule } from "@angular/material/tabs";
     MatButtonModule,
     MatCheckboxModule,
     MatTabsModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MaterialFileInputModule,
   ],
 })
 export class ExtraPagesModule {}

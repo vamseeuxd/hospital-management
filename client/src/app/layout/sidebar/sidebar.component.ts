@@ -1,17 +1,10 @@
-import { Router, NavigationEnd } from "@angular/router";
-import { DOCUMENT } from "@angular/common";
-import {
-  Component,
-  Inject,
-  ElementRef,
-  OnInit,
-  Renderer2,
-  HostListener,
-  OnDestroy,
-} from "@angular/core";
-import { ROUTES } from "./sidebar-items";
-import { AuthService } from "src/app/core/service/auth.service";
-import { Role } from "src/app/core/models/role";
+import {NavigationEnd, Router} from "@angular/router";
+import {DOCUMENT} from "@angular/common";
+import {Component, ElementRef, HostListener, Inject, OnDestroy, OnInit, Renderer2,} from "@angular/core";
+import {ROUTES} from "./sidebar-items";
+import {AuthService} from "src/app/core/service/auth.service";
+import {Role} from "src/app/core/models/role";
+
 @Component({
   selector: "app-sidebar",
   templateUrl: "./sidebar.component.html",
@@ -32,6 +25,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   headerHeight = 60;
   currentRoute: string;
   routerObj = null;
+
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private renderer: Renderer2,
@@ -60,17 +54,20 @@ export class SidebarComponent implements OnInit, OnDestroy {
       }
     });
   }
+
   @HostListener("window:resize", ["$event"])
   windowResizecall(event) {
     this.setMenuHeight();
     this.checkStatuForResize(false);
   }
+
   @HostListener("document:mousedown", ["$event"])
   onGlobalClick(event): void {
     if (!this.elementRef.nativeElement.contains(event.target)) {
       this.renderer.removeClass(this.document.body, "overlay-open");
     }
   }
+
   callLevel1Toggle(event: any, element: any) {
     if (element === this.level1Menu) {
       this.level1Menu = "0";
@@ -84,6 +81,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       this.renderer.addClass(event.target, "toggled");
     }
   }
+
   callLevel2Toggle(event: any, element: any) {
     if (element === this.level2Menu) {
       this.level2Menu = "0";
@@ -91,6 +89,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       this.level2Menu = element;
     }
   }
+
   callLevel3Toggle(event: any, element: any) {
     if (element === this.level3Menu) {
       this.level3Menu = "0";
@@ -98,8 +97,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
       this.level3Menu = element;
     }
   }
+
   ngOnInit() {
-    if (this.authService.currentUserValue) {
+    /*if (this.authService.currentUserValue) {
       const userRole = this.authService.currentUserValue.role;
       this.userFullName =
         this.authService.currentUserValue.firstName +
@@ -119,30 +119,56 @@ export class SidebarComponent implements OnInit, OnDestroy {
       } else {
         this.userType = Role.Admin;
       }
-    }
+    }*/
+    this.authService.currentUser.subscribe(value => {
+      const userRole = this.authService.currentUserValue.role;
+      this.userFullName =
+        this.authService.currentUserValue.firstName +
+        " " +
+        this.authService.currentUserValue.lastName;
+      this.userImg = this.authService.currentUserValue.img;
+
+      this.sidebarItems = ROUTES.filter(
+        (x) => x.role.indexOf(userRole) !== -1 || x.role.indexOf("All") !== -1
+      );
+      if (userRole === Role.Admin) {
+        this.userType = Role.Admin;
+      } else if (userRole === Role.Patient) {
+        this.userType = Role.Patient;
+      } else if (userRole === Role.Doctor) {
+        this.userType = Role.Doctor;
+      } else {
+        this.userType = Role.Admin;
+      }
+    });
 
     // this.sidebarItems = ROUTES.filter((sidebarItem) => sidebarItem);
     this.initLeftSidebar();
     this.bodyTag = this.document.body;
   }
+
   ngOnDestroy() {
     this.routerObj.unsubscribe();
   }
+
   initLeftSidebar() {
     const _this = this;
     // Set menu height
     _this.setMenuHeight();
     _this.checkStatuForResize(true);
   }
+
   setMenuHeight() {
     this.innerHeight = window.innerHeight;
     const height = this.innerHeight - this.headerHeight;
     this.listMaxHeight = height + "";
     this.listMaxWidth = "500px";
   }
+
   isOpen() {
     return this.bodyTag.classList.contains("overlay-open");
   }
+
   checkStatuForResize(firstTime) {
     if (window.innerWidth < 1170) {
       this.renderer.addClass(this.document.body, "ls-closed");
@@ -150,6 +176,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       this.renderer.removeClass(this.document.body, "ls-closed");
     }
   }
+
   mouseHover(e) {
     const body = this.elementRef.nativeElement.closest("body");
     if (body.classList.contains("submenu-closed")) {
@@ -157,6 +184,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       this.renderer.removeClass(this.document.body, "submenu-closed");
     }
   }
+
   mouseOut(e) {
     const body = this.elementRef.nativeElement.closest("body");
     if (body.classList.contains("side-closed-hover")) {
@@ -164,6 +192,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       this.renderer.addClass(this.document.body, "submenu-closed");
     }
   }
+
   logout() {
     this.authService.logout().subscribe((res) => {
       if (!res.success) {

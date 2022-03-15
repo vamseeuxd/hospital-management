@@ -1,0 +1,64 @@
+<!--
+<h4 class="text-muted text-center">{{title}}</h4>
+<div #parentDiv style="width: 100%;" class="border shadow-sm m-3 mx-auto">
+  <webcam [width]="parentDiv.clientWidth"
+          [height]="parentDiv.clientWidth" [trigger]="triggerObservable"
+          (imageCapture)="handleImage($event)"
+          *ngIf="showWebcam && !webcamImage"
+          [allowCameraSwitch]="allowCameraSwitch" [switchCamera]="nextWebcamObservable"
+          [videoOptions]="videoOptions"
+          [imageQuality]="1"
+          [mirrorImage]="'never'"
+          (cameraSwitched)="cameraWasSwitched($event)"
+          (initError)="handleInitError($event)"
+  ></webcam>
+  <img [src]="webcamImage.imageAsDataUrl" *ngIf="webcamImage" [width]="parentDiv.clientWidth"/>
+</div>
+
+
+<div class="d-flex">
+  <button class="mx-auto" mat-raised-button color="primary" *ngIf="!webcamImage" (click)="triggerSnapshot();">Take A Snapshot</button>
+  <button class="ms-auto me-1" mat-raised-button color="primary" *ngIf="webcamImage">Save</button>
+  <button class="me-auto ms-1" mat-raised-button color="accent" *ngIf="webcamImage" (click)="webcamImage = null;">Retake</button>
+</div>
+
+
+<h4 *ngIf="errors.length > 0">Messages:</h4>
+<ul *ngFor="let error of errors">
+  <li>{{error | json}}</li>
+</ul>
+-->
+
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{title}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div #imageContainer style="width: 100%;" class="border shadow-sm m-3 mx-auto text-center">
+      <img [src]="webcamImage.imageAsDataUrl"
+           *ngIf="webcamImage"
+           [width]="imageContainer.clientWidth"
+           [height]="imageContainer.clientHeight"/>
+      <webcam [width]="imageContainer.clientWidth"
+              [height]="imageContainer.clientHeight"
+              [trigger]="triggerObservable"
+              (imageCapture)="handleImage($event)"
+              *ngIf="showWebcam && !webcamImage"
+              [allowCameraSwitch]="allowCameraSwitch" [switchCamera]="nextWebcamObservable"
+              [videoOptions]="videoOptions"
+              [imageQuality]="1"
+              [mirrorImage]="'never'"
+              (cameraSwitched)="cameraWasSwitched($event)"
+              (initError)="handleInitError($event)"
+      ></webcam>
+      <!--<img [src]="webcamImage.imageAsDataUrl" *ngIf="webcamImage" [width]="parentDiv.clientWidth"/>-->
+    </div>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-button *ngIf="!webcamImage" (click)="triggerSnapshot();">Take A Snapshot</button>
+    <button mat-button class="me-1" *ngIf="webcamImage" (click)="save.emit(webcamImage)">Save</button>
+    <button mat-button class="ms-1" *ngIf="webcamImage" (click)="webcamImage = null;">Retake</button>
+    <button mat-button (click)="close.emit()">Cancel</button>
+  </mat-card-actions>
+</mat-card>

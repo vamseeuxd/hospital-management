@@ -54,6 +54,7 @@ export class SignupComponent implements AfterViewInit {
         email: 'vamsi.flex@gmail.com',
         firstName: 'Vamsee Kalyan',
         lastName: 'Sunkara',
+        gender: 'male',
       });
     }, 5);
     await this.spinner.hide("wait");
@@ -129,13 +130,6 @@ export class SignupComponent implements AfterViewInit {
     }, async (error) => {
       this.snackBar.open(error, 'OK');
     });
-
-    // stop here if form is invalid
-    /*if (this.authForm.invalid) {
-      return;
-    } else {
-      this.router.navigate(["/admin/dashboard/main"]);
-    }*/
   }
 
   private onSignInSubmit() {
