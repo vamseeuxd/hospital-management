@@ -1,0 +1,15 @@
+:host {
+  display: inline-block;
+  position: relative;
+  width: 200px;
+  height: 200px;
+  background-color: rgba(0, 0, 0, 0.8);
+  .action-bar {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 3px 5px;
+  }
+}

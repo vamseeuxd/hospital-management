@@ -6,9 +6,9 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Subscription} from "rxjs";
 import {NgxSpinnerService} from "ngx-spinner";
 import {MatDialog} from "@angular/material/dialog";
-import {WebCamComponent} from "../../shared-components/web-cam/web-cam.component";
 import {WebcamImage} from "ngx-webcam";
 import {getDownloadURL, getStorage, ref, uploadBytes} from "@angular/fire/storage";
+import {PhotoEditorComponent} from "../../shared-components/photo-editor/photo-editor.component";
 
 @Component({
   selector: "app-profile",
@@ -36,12 +36,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
     // gs://tat-clinic.appspot.com/male.png
   }
 
-  async onSubmit() {
+  async onSubmit(photoEditor: PhotoEditorComponent) {
+    if (photoEditor.base64) {
+      await this.uploadImage(photoEditor.base64);
+    }
     await this.spinner.show("wait");
     try {
       const dob = `${this.profileForm.value.dob.getMonth() + 1}-${this.profileForm.value.dob.getDate()}-${this.profileForm.value.dob.getFullYear()}`;
       await this.usersService.updateUser({...this.profileForm.value, dob}, this.currentUser.id);
       await this.spinner.hide('wait');
+      photoEditor.base64 = null;
     } catch (e) {
       await this.spinner.hide('wait');
     }
@@ -68,34 +72,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.currentUser = value[0];
       });
     });
-    // this.updateProfilePicture();
   }
 
   ngOnDestroy(): void {
     this.currentUserSubscription.unsubscribe();
   }
 
-  updateProfilePicture() {
-    const dialogRef = this.dialogModel.open(WebCamComponent, {width: "640px", disableClose: true});
-    dialogRef.componentInstance.title = `${this.currentUser.firstName} ${this.currentUser.lastName} Profile Picture`;
-    const sub1 = dialogRef.componentInstance.close.subscribe(() => {
-      sub1.unsubscribe();
-      sub2.unsubscribe();
-      dialogRef.close();
-    });
-    const sub2 = dialogRef.componentInstance.save.subscribe((image: WebcamImage) => {
-      console.log(image.imageData);
-      this.webcamImage = image;
-      this.uploadImage(image.imageAsDataUrl);
-      sub1.unsubscribe();
-      sub2.unsubscribe();
-      dialogRef.close();
-    });
-  }
-
   async getImage(picture: string) {
     const storage = getStorage();
     const pathReference = ref(storage, picture);
+    // const pathReference = ref(storage, `gs://tat-clinic.appspot.com/${picture}`);
     getDownloadURL(pathReference).then(async value => {
       this.mainImage = value;
       await this.spinner.hide("wait");
@@ -107,12 +93,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
     const storageRef = ref(storage, 'profile/' + this.currentUser.uid);
     const file = new File([this.convertDataUrlToBlob(dataUrl)], this.currentUser.uid, {type: `image/${'png'}`});
     await this.spinner.show('wait');
-    uploadBytes(storageRef, file).then(async (snapshot) => {
-      console.log('Uploaded a blob or file!', snapshot);
-      this.profileForm.patchValue({picture: snapshot.metadata.fullPath});
-      await this.spinner.hide("wait");
-    });
-    // console.log(file);
+    const {metadata: {fullPath}} = await uploadBytes(storageRef, file);
+    this.profileForm.patchValue({picture: fullPath});
+    await this.spinner.hide("wait");
   }
 
   convertDataUrlToBlob(dataUrl): Blob {

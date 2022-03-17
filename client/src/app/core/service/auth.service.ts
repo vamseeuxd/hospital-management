@@ -7,6 +7,7 @@ import {environment} from "src/environments/environment";
 import {Auth} from "@angular/fire/auth";
 import {Router} from "@angular/router";
 import {UsersService} from "../../data-base/users/users.service";
+import {getDownloadURL, getStorage, ref} from "@angular/fire/storage";
 
 @Injectable({
   providedIn: "root",
@@ -27,14 +28,18 @@ export class AuthService {
       if (value) {
         this.userService.getUserById(value.uid).subscribe(
           /*const subscription = this.userService.getUsersByMobile(value.phoneNumber, false).subscribe(*/
-          userFinal => {
+          async userFinal => {
             // subscription.unsubscribe();
             const maleUrl = 'assets/images/male.png';
             const femaleUrl = 'assets/images/female.png';
+            let mainImage;
+            if (userFinal.picture) {
+              mainImage = await this.getImage(userFinal.picture);
+            }
             const user: User = {
               id: value.uid,
               gender: userFinal.gender,
-              img: userFinal.gender === 'male' ? maleUrl : femaleUrl,
+              img: userFinal.picture ? mainImage : (userFinal.gender === 'male' ? maleUrl : femaleUrl),
               password: '',
               firstName: userFinal.firstName,
               role: userFinal.role,
@@ -42,14 +47,20 @@ export class AuthService {
               token: value.uid,
               username: value.phoneNumber
             };
-            debugger;
             localStorage.setItem("currentUser", JSON.stringify(user));
             this.currentUserSubject.next(user);
+            debugger;
           });
       } else {
         this.logout();
       }
     });
+  }
+
+  async getImage(picture: string) {
+    const storage = getStorage();
+    const pathReference = ref(storage, picture);
+    return getDownloadURL(pathReference);
   }
 
   public get currentUserValue(): User {
@@ -72,11 +83,11 @@ export class AuthService {
       );
   }
 
-  logout() {
-    this.auth.signOut();
+  async logout() {
+    await this.auth.signOut();
     // remove user from local storage to log user out
     localStorage.removeItem("currentUser");
     this.currentUserSubject.next(null);
-    return of({success: false});
+    // return of({success: false});
   }
 }

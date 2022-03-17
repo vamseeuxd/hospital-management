@@ -86,7 +86,13 @@ export class SignupComponent implements AfterViewInit {
       const {user} = await this.confirmationResult.confirm(details.mobileOtp);
       if (user) {
         try {
-          await this.userService.addUser({...this.registrationForm.value, mobile: `+91${this.registrationForm.value.mobile}`});
+          await this.userService.addUser(
+            {
+              ...this.registrationForm.value,
+              mobile: `+91${this.registrationForm.value.mobile}`,
+              picture: this.registrationForm.value.gender + '.png',
+              role: 'Patient',
+            });
           await updateProfile(
             this.auth.currentUser,
             {displayName: `${this.registrationForm.value.firstName} ${this.registrationForm.value.lastName}`}

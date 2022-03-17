@@ -1,0 +1,23 @@
+<div class="d-none"><input #fileInput type="file" (change)="fileChangeEvent($event)"/></div>
+<label class="text-light position-absolute w-100 h-100 text-center d-flex justify-content-center align-items-center">
+  <div class="spinner-border text-light" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</label>
+<ngx-photo-editor
+  [imageChangedEvent]="imageChangedEvent"
+  (imageCropped)="imageCropped($event)"
+  [viewMode]="3"
+  #imageEditor
+  [resizeToWidth]="200"></ngx-photo-editor>
+
+<img style="z-index: 10;" class="position-absolute start-0" id="preview" loading="lazy" style="max-width: 200px;" #imagePreview [src]="base64 ? base64 : value" alt="">
+
+<div class="action-bar">
+  <!--<button (click)="editImage(imageEditor,imagePreview)" class="btn btn-link text-light w-50 rounded-0 border-dark border-0 border-end" color="accent">Edit</button>-->
+  <button *ngIf="base64" (click)="base64 = null;fileInput.value = '';" class="btn btn-link text-light w-50 rounded-0" color="primary">Cancel
+  </button>
+  <button (click)="fileInput.click()" class="btn btn-link text-light w-50 rounded-0" color="primary">Change</button>
+</div>
+
+<!--<canvas class="border" id="myCanvas"></canvas>-->

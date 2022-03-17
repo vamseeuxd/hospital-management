@@ -63,6 +63,7 @@
     "ngx-mask": "^12.0.0",
     "ngx-material-file-input": "^3.0.0",
     "ngx-perfect-scrollbar": "^10.1.1",
+    "ngx-photo-editor": "^0.3.8",
     "ngx-spinner": "^11.0.1",
     "ngx-webcam": "^0.4.1",
     "rxfire": "^6.0.0",

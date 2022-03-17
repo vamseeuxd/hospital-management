@@ -121,24 +121,23 @@ export class SidebarComponent implements OnInit, OnDestroy {
       }
     }*/
     this.authService.currentUser.subscribe(value => {
-      const userRole = this.authService.currentUserValue.role;
-      this.userFullName =
-        this.authService.currentUserValue.firstName +
-        " " +
-        this.authService.currentUserValue.lastName;
-      this.userImg = this.authService.currentUserValue.img;
+      if (value) {
+        const userRole = this.authService.currentUserValue.role;
+        this.userFullName = this.authService.currentUserValue.firstName + " " + this.authService.currentUserValue.lastName;
+        this.userImg = this.authService.currentUserValue.img;
 
-      this.sidebarItems = ROUTES.filter(
-        (x) => x.role.indexOf(userRole) !== -1 || x.role.indexOf("All") !== -1
-      );
-      if (userRole === Role.Admin) {
-        this.userType = Role.Admin;
-      } else if (userRole === Role.Patient) {
-        this.userType = Role.Patient;
-      } else if (userRole === Role.Doctor) {
-        this.userType = Role.Doctor;
-      } else {
-        this.userType = Role.Admin;
+        this.sidebarItems = ROUTES.filter(
+          (x) => x.role.indexOf(userRole) !== -1 || x.role.indexOf("All") !== -1
+        );
+        if (userRole === Role.Admin) {
+          this.userType = Role.Admin;
+        } else if (userRole === Role.Patient) {
+          this.userType = Role.Patient;
+        } else if (userRole === Role.Doctor) {
+          this.userType = Role.Doctor;
+        } else {
+          this.userType = Role.Admin;
+        }
       }
     });
 
@@ -193,11 +192,13 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
   }
 
-  logout() {
-    this.authService.logout().subscribe((res) => {
+  async logout() {
+    await this.authService.logout();
+    await this.router.navigate(["/authentication/signin"]);
+    /*this.authService.logout().subscribe((res) => {
       if (!res.success) {
         this.router.navigate(["/authentication/signin"]);
       }
-    });
+    });*/
   }
 }

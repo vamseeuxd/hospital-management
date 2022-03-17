@@ -5,7 +5,7 @@
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
           <ul class="breadcrumb breadcrumb-style ">
             <li class="breadcrumb-item">
-              <h4 class="page-title">Profile</h4>
+              <h4 class="page-title border-end-0">Profile</h4>
             </li>
             <!--<li class="breadcrumb-item bcrumb-1">
               <a routerLink="/admin/dashboard/main">
@@ -24,13 +24,10 @@
       <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
         <div class="card">
           <div class="body">
-            <form class="m-4" [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+            <form class="m-4" [formGroup]="profileForm" (ngSubmit)="onSubmit(photoEditor)">
               <div class="row">
                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3 text-center">
-                  <img [src]="mainImage" width="80" height="80" class="shadow-sm border">
-                  <img  class="shadow-sm border" [src]="webcamImage.imageAsDataUrl" *ngIf="webcamImage" width="80" height="80"/>
-                  <h6 class="m-0 p-0 text-center text-muted mt-2">Profile Picture</h6>
-                  <button (click)="updateProfilePicture()" class="btn btn-link p-0 m-0">Change</button>
+                  <app-tat-photo-editor #photoEditor [value]="mainImage"></app-tat-photo-editor>
                 </div>
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-3">
                   <mat-form-field class="example-full-width mb-3" appearance="fill">
