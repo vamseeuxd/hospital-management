@@ -1,17 +1,26 @@
-import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
-import { Page404Component } from "./authentication/page404/page404.component";
-import { AuthGuard } from "./core/guard/auth.guard";
-import { Role } from "./core/models/role";
-import { AuthLayoutComponent } from "./layout/app-layout/auth-layout/auth-layout.component";
-import { MainLayoutComponent } from "./layout/app-layout/main-layout/main-layout.component";
+import {NgModule} from "@angular/core";
+import {RouterModule, Routes} from "@angular/router";
+import {Page404Component} from "./authentication/page404/page404.component";
+import {Role} from "./core/models/role";
+import {AuthLayoutComponent} from "./layout/app-layout/auth-layout/auth-layout.component";
+import {MainLayoutComponent} from "./layout/app-layout/main-layout/main-layout.component";
+import {canActivate, redirectLoggedInTo} from '@angular/fire/auth-guard';
+import {AuthGuard} from "./core/guard/auth.guard";
+
+// const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['/authentication/signin']);
+const redirectLoggedInToHome = () => redirectLoggedInTo(['/admin/dashboard/main']);
+
+
 const routes: Routes = [
   {
     path: "",
     component: MainLayoutComponent,
-    canActivate: [AuthGuard],
     children: [
-      { path: "", redirectTo: "/authentication/signin", pathMatch: "full" },
+      {
+        path: "",
+        redirectTo: "/authentication/signin",
+        pathMatch: "full"
+      },
       {
         path: "admin",
         canActivate: [AuthGuard],
@@ -132,15 +141,18 @@ const routes: Routes = [
   {
     path: "authentication",
     component: AuthLayoutComponent,
+    ...canActivate(redirectLoggedInToHome),
     loadChildren: () =>
       import("./authentication/authentication.module").then(
         (m) => m.AuthenticationModule
       ),
   },
-  { path: "**", component: Page404Component },
+  {path: "**", component: Page404Component},
 ];
+
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: "legacy" })],
+  imports: [RouterModule.forRoot(routes, {relativeLinkResolution: "legacy"})],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule {
+}

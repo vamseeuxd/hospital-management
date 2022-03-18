@@ -1,18 +1,12 @@
-import { DOCUMENT } from "@angular/common";
-import {
-  Component,
-  Inject,
-  ElementRef,
-  OnInit,
-  Renderer2,
-  AfterViewInit,
-} from "@angular/core";
-import { Router } from "@angular/router";
-import { ConfigService } from "src/app/config/config.service";
-import { AuthService } from "src/app/core/service/auth.service";
-import { RightSidebarService } from "src/app/core/service/rightsidebar.service";
-import { LanguageService } from "src/app/core/service/language.service";
-import { UnsubscribeOnDestroyAdapter } from "src/app/shared/UnsubscribeOnDestroyAdapter";
+import {DOCUMENT} from "@angular/common";
+import {AfterViewInit, Component, ElementRef, Inject, OnInit, Renderer2,} from "@angular/core";
+import {Router} from "@angular/router";
+import {ConfigService} from "src/app/config/config.service";
+import {AuthService} from "src/app/core/service/auth.service";
+import {RightSidebarService} from "src/app/core/service/rightsidebar.service";
+import {LanguageService} from "src/app/core/service/language.service";
+import {UnsubscribeOnDestroyAdapter} from "src/app/shared/UnsubscribeOnDestroyAdapter";
+
 const document: any = window.document;
 
 @Component({
@@ -22,8 +16,7 @@ const document: any = window.document;
 })
 export class HeaderComponent
   extends UnsubscribeOnDestroyAdapter
-  implements OnInit, AfterViewInit
-{
+  implements OnInit, AfterViewInit {
   public config: any = {};
   userImg: string;
   homePage: string;
@@ -33,7 +26,9 @@ export class HeaderComponent
   langStoreValue: string;
   defaultFlag: string;
   isOpenSidebar: boolean;
+
   constructor(
+    // tslint:disable-next-line:no-shadowed-variable
     @Inject(DOCUMENT) private document: Document,
     private renderer: Renderer2,
     public elementRef: ElementRef,
@@ -45,10 +40,11 @@ export class HeaderComponent
   ) {
     super();
   }
+
   listLang = [
-    { text: "English", flag: "assets/images/flags/us.jpg", lang: "en" },
-    { text: "Spanish", flag: "assets/images/flags/spain.jpg", lang: "es" },
-    { text: "German", flag: "assets/images/flags/germany.jpg", lang: "de" },
+    {text: "English", flag: "assets/images/flags/us.jpg", lang: "en"},
+    {text: "Spanish", flag: "assets/images/flags/spain.jpg", lang: "es"},
+    {text: "German", flag: "assets/images/flags/germany.jpg", lang: "de"},
   ];
   notifications: any[] = [
     {
@@ -94,34 +90,44 @@ export class HeaderComponent
       message: "kindly help me for code.",
     },
   ];
+
   ngOnInit() {
     this.config = this.configService.configData;
-    const userRole = this.authService.currentUserValue.role;
-    this.userImg = this.authService.currentUserValue.img;
-
-    if (userRole === "Admin") {
-      this.homePage = "admin/dashboard/main";
-    } else if (userRole === "Patient") {
-      this.homePage = "patient/dashboard";
-    } else if (userRole === "Doctor") {
-      this.homePage = "doctor/dashboard";
-    } else {
-      this.homePage = "admin/dashboard/main";
-    }
-
-    this.langStoreValue = localStorage.getItem("lang");
-    const val = this.listLang.filter((x) => x.lang === this.langStoreValue);
-    this.countryName = val.map((element) => element.text);
-    if (val.length === 0) {
-      if (this.flagvalue === undefined) {
-        this.defaultFlag = "assets/images/flags/us.jpg";
+    this.authService.currentUser.subscribe(value => {
+      if (value && this.authService.currentUserValue) {
+        const userRole = this.authService.currentUserValue.role;
+        this.userImg = this.authService.currentUserValue.img;
+        if (userRole === "Admin") {
+          this.homePage = "admin/dashboard/main";
+        } else if (userRole === "Patient") {
+          this.homePage = "patient/dashboard";
+        } else if (userRole === "Doctor") {
+          this.homePage = "doctor/dashboard";
+        } else {
+          this.homePage = "admin/dashboard/main";
+        }
+        this.config = this.configService.configData;
+        this.langStoreValue = localStorage.getItem("lang");
+        const val = this.listLang.filter((x) => x.lang === this.langStoreValue);
+        this.countryName = val.map((element) => element.text);
+        if (val.length === 0) {
+          if (this.flagvalue === undefined) {
+            this.defaultFlag = "assets/images/flags/us.jpg";
+          }
+        } else {
+          this.flagvalue = val.map((element) => element.flag);
+        }
       }
-    } else {
-      this.flagvalue = val.map((element) => element.flag);
-    }
+    });
   }
 
   ngAfterViewInit() {
+    setTimeout(() => {
+      this.setThemeOnStartup();
+    });
+  }
+
+  setThemeOnStartup() {
     // set theme on startup
     if (localStorage.getItem("theme")) {
       this.renderer.removeClass(this.document.body, this.config.layout.variant);
@@ -169,6 +175,7 @@ export class HeaderComponent
       }
     }
   }
+
   callFullscreen() {
     if (
       !document.fullscreenElement &&
@@ -197,12 +204,14 @@ export class HeaderComponent
       }
     }
   }
+
   setLanguage(text: string, lang: string, flag: string) {
     this.countryName = text;
     this.flagvalue = flag;
     this.langStoreValue = lang;
     this.languageService.setLanguage(lang);
   }
+
   mobileMenuSidebarOpen(event: any, className: string) {
     const hasClass = event.target.classList.contains(className);
     if (hasClass) {
@@ -211,6 +220,7 @@ export class HeaderComponent
       this.renderer.addClass(this.document.body, className);
     }
   }
+
   callSidemenuCollapse() {
     const hasClass = this.document.body.classList.contains("side-closed");
     if (hasClass) {
@@ -221,6 +231,7 @@ export class HeaderComponent
       this.renderer.addClass(this.document.body, "submenu-closed");
     }
   }
+
   public toggleRightSidebar(): void {
     this.subs.sink = this.rightSidebarService.sidebarState.subscribe(
       (isRunning) => {
@@ -232,11 +243,14 @@ export class HeaderComponent
       (this.isOpenSidebar = !this.isOpenSidebar)
     );
   }
-  logout() {
-    this.subs.sink = this.authService.logout().subscribe((res) => {
+
+  async logout() {
+    await this.authService.logout();
+    await this.router.navigate(["/authentication/signin"]);
+    /*this.subs.sink = this.authService.logout().subscribe((res) => {
       if (!res.success) {
         this.router.navigate(["/authentication/signin"]);
       }
-    });
+    });*/
   }
 }

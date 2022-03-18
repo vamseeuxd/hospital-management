@@ -35,7 +35,7 @@ export class LockedComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
     // stop here if form is invalid
-    if (this.authForm.invalid) {
+    if (this.authForm.invalid && this.authService.currentUserValue) {
       return;
     } else {
       const role = this.authService.currentUserValue.role;
