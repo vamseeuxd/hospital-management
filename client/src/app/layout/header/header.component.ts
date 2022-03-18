@@ -28,6 +28,7 @@ export class HeaderComponent
   isOpenSidebar: boolean;
 
   constructor(
+    // tslint:disable-next-line:no-shadowed-variable
     @Inject(DOCUMENT) private document: Document,
     private renderer: Renderer2,
     public elementRef: ElementRef,
@@ -91,8 +92,9 @@ export class HeaderComponent
   ];
 
   ngOnInit() {
+    this.config = this.configService.configData;
     this.authService.currentUser.subscribe(value => {
-      if (value) {
+      if (value && this.authService.currentUserValue) {
         const userRole = this.authService.currentUserValue.role;
         this.userImg = this.authService.currentUserValue.img;
         if (userRole === "Admin") {
@@ -120,6 +122,12 @@ export class HeaderComponent
   }
 
   ngAfterViewInit() {
+    setTimeout(() => {
+      this.setThemeOnStartup();
+    });
+  }
+
+  setThemeOnStartup() {
     // set theme on startup
     if (localStorage.getItem("theme")) {
       this.renderer.removeClass(this.document.body, this.config.layout.variant);

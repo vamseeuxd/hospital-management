@@ -48,6 +48,23 @@ export class SigninComponent
   }
 
   ngAfterViewInit() {
+
+    this.subs.add(this.authService.currentUser.subscribe(async user => {
+        await this.spinner.hide("wait");
+        if (user) {
+          if (user.role === Role.All || user.role === Role.Admin) {
+            await this.router.navigate(["/admin/dashboard/main"]);
+          } else if (user.role === Role.Doctor) {
+            await this.router.navigate(["/doctor/dashboard"]);
+          } else if (user.role === Role.Patient) {
+            await this.router.navigate(["/patient/dashboard"]);
+          } else {
+            await this.router.navigate(["/authentication/signin"]);
+          }
+        }
+      })
+    );
+
     this.authForm = this.formBuilder.group({
       username: ["admin@hospital.org", Validators.required],
       password: ["admin@123", Validators.required],
@@ -55,8 +72,6 @@ export class SigninComponent
     (window as any).recaptchaVerifier = new RecaptchaVerifier('sign-in-button', {
       size: 'invisible',
       callback: (response) => {
-        // reCAPTCHA solved, allow signInWithPhoneNumber.
-        // this.onSignInSubmit();
       }
     }, this.auth);
   }
@@ -92,7 +107,7 @@ export class SigninComponent
         .login(this.f.username.value, this.f.password.value)
         .subscribe(
           (res) => {
-            if (res) {
+            if (res && this.authService.currentUserValue) {
               setTimeout(() => {
                 const role = this.authService.currentUserValue.role;
                 if (role === Role.All || role === Role.Admin) {
@@ -169,24 +184,8 @@ export class SigninComponent
   async verifyOTP(details: { mobile: string; mobileOtp: string; }, dialogRef: MatDialogRef<OtpDialogComponent>) {
     // await this.spinner.hide('wait');
     await this.spinner.show("wait");
-    const subscription = this.authService.currentUser.subscribe(async user => {
-      /*if (subscription) {
-        subscription.unsubscribe();
-      }*/
-      await this.spinner.hide("wait");
-      if (user) {
-        if (user.role === Role.All || user.role === Role.Admin) {
-          await this.router.navigate(["/admin/dashboard/main"]);
-        } else if (user.role === Role.Doctor) {
-          await this.router.navigate(["/doctor/dashboard"]);
-        } else if (user.role === Role.Patient) {
-          await this.router.navigate(["/patient/dashboard"]);
-        } else {
-          await this.router.navigate(["/authentication/signin"]);
-        }
-      }
-    });
     await this.confirmationResult.confirm(details.mobileOtp);
+    await this.spinner.hide("wait");
     dialogRef.close();
   }
 }

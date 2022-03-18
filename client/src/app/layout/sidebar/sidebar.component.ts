@@ -121,7 +121,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       }
     }*/
     this.authService.currentUser.subscribe(value => {
-      if (value) {
+      if (value && this.authService.currentUserValue) {
         const userRole = this.authService.currentUserValue.role;
         this.userFullName = this.authService.currentUserValue.firstName + " " + this.authService.currentUserValue.lastName;
         this.userImg = this.authService.currentUserValue.img;

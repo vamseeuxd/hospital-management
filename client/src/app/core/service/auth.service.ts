@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {BehaviorSubject, Observable, of} from "rxjs";
+import {BehaviorSubject, Observable, Subscription, tap} from "rxjs";
 import {map} from "rxjs/operators";
 import {User} from "../models/user";
 import {environment} from "src/environments/environment";
@@ -13,8 +13,9 @@ import {getDownloadURL, getStorage, ref} from "@angular/fire/storage";
   providedIn: "root",
 })
 export class AuthService {
-  private currentUserSubject: BehaviorSubject<User>;
-  public currentUser: Observable<User>;
+  private currentUserSubject: BehaviorSubject<User | null>;
+  public currentUser: Observable<User | null>;
+  private userServiceSubscribe: Subscription;
 
   constructor(
     private http: HttpClient,
@@ -24,12 +25,10 @@ export class AuthService {
   ) {
     this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem("currentUser")));
     this.currentUser = this.currentUserSubject.asObservable();
-    this.auth.onAuthStateChanged(value => {
+    this.auth.onAuthStateChanged(async value => {
       if (value) {
-        this.userService.getUserById(value.uid).subscribe(
-          /*const subscription = this.userService.getUsersByMobile(value.phoneNumber, false).subscribe(*/
+        this.userServiceSubscribe = this.userService.getUserById(value.uid).subscribe(
           async userFinal => {
-            // subscription.unsubscribe();
             const maleUrl = 'assets/images/male.png';
             const femaleUrl = 'assets/images/female.png';
             let mainImage;
@@ -49,10 +48,7 @@ export class AuthService {
             };
             localStorage.setItem("currentUser", JSON.stringify(user));
             this.currentUserSubject.next(user);
-            debugger;
           });
-      } else {
-        this.logout();
       }
     });
   }
@@ -64,7 +60,13 @@ export class AuthService {
   }
 
   public get currentUserValue(): User {
-    return this.currentUserSubject.value;
+    if (this.auth.currentUser) {
+      return this.currentUserSubject.value;
+    } else {
+      localStorage.removeItem("currentUser");
+      this.currentUserSubject.next(null);
+      return null;
+    }
   }
 
   login(username: string, password: string) {
@@ -84,10 +86,11 @@ export class AuthService {
   }
 
   async logout() {
-    await this.auth.signOut();
-    // remove user from local storage to log user out
+    if (this.userServiceSubscribe) {
+      this.userServiceSubscribe.unsubscribe();
+    }
     localStorage.removeItem("currentUser");
     this.currentUserSubject.next(null);
-    // return of({success: false});
+    await this.auth.signOut();
   }
 }
