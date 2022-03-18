@@ -37,6 +37,7 @@ export interface IUser {
   picture: string;
   isDeleted?: boolean;
   updatedOn?: number;
+  active: boolean;
   createdOn?: number;
 }
 

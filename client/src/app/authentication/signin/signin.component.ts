@@ -144,14 +144,19 @@ export class SigninComponent
         this.loading = false;
         getUsersByMobileSubscription.unsubscribe();
         if (value.length > 0) {
-          try {
-            this.confirmationResult = await signInWithPhoneNumber(
-              this.auth, '+91' + this.signInForm.value.mobile,
-              (window as any).recaptchaVerifier
-            );
-            await this.showOTPDialog();
-          } catch (e) {
-            this.snackBar.open(e, 'OK');
+          if (value[0].active) {
+            try {
+              this.confirmationResult = await signInWithPhoneNumber(
+                this.auth, '+91' + this.signInForm.value.mobile,
+                (window as any).recaptchaVerifier
+              );
+              await this.showOTPDialog();
+            } catch (e) {
+              this.snackBar.open(e, 'OK');
+            }
+          } else {
+            await this.spinner.hide('wait');
+            alert('Your Profile is not active! For activation, please contact our hospital.');
           }
         } else {
           await this.spinner.hide('wait');

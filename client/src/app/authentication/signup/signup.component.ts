@@ -92,13 +92,18 @@ export class SignupComponent implements AfterViewInit {
               mobile: `+91${this.registrationForm.value.mobile}`,
               picture: this.registrationForm.value.gender + '.png',
               role: 'Patient',
+              active: false,
             });
           await updateProfile(
             this.auth.currentUser,
             {displayName: `${this.registrationForm.value.firstName} ${this.registrationForm.value.lastName}`}
           );
           await updateEmail(this.auth.currentUser, this.registrationForm.value.email);
-          this.snackBar.open('Registration Successful, Now you can login with mobile', 'OK', {duration: 100000});
+          this.snackBar.open(
+            'Registration Successful! For activation, please contact our hospital.',
+            'OK',
+            {duration: 100000}
+          );
           dialogRef.close();
           setTimeout(async () => {
             await this.auth.signOut();
