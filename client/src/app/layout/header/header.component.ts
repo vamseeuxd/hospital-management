@@ -6,6 +6,7 @@ import {AuthService} from "src/app/core/service/auth.service";
 import {RightSidebarService} from "src/app/core/service/rightsidebar.service";
 import {LanguageService} from "src/app/core/service/language.service";
 import {UnsubscribeOnDestroyAdapter} from "src/app/shared/UnsubscribeOnDestroyAdapter";
+import {NgxSpinnerService} from "ngx-spinner";
 
 const document: any = window.document;
 
@@ -36,6 +37,7 @@ export class HeaderComponent
     private configService: ConfigService,
     private authService: AuthService,
     private router: Router,
+    private spinner: NgxSpinnerService,
     public languageService: LanguageService
   ) {
     super();
@@ -92,8 +94,9 @@ export class HeaderComponent
   ];
 
   ngOnInit() {
+    this.spinner.show("wait");
     this.config = this.configService.configData;
-    this.authService.currentUser.subscribe(value => {
+    this.authService.currentUser.subscribe(async value => {
       if (value && this.authService.currentUserValue) {
         const userRole = this.authService.currentUserValue.role;
         this.userImg = this.authService.currentUserValue.img;
@@ -118,6 +121,7 @@ export class HeaderComponent
           this.flagvalue = val.map((element) => element.flag);
         }
       }
+      await this.spinner.hide("wait");
     });
   }
 

@@ -4,11 +4,10 @@ import {Page404Component} from "./authentication/page404/page404.component";
 import {Role} from "./core/models/role";
 import {AuthLayoutComponent} from "./layout/app-layout/auth-layout/auth-layout.component";
 import {MainLayoutComponent} from "./layout/app-layout/main-layout/main-layout.component";
-import {canActivate, redirectLoggedInTo} from '@angular/fire/auth-guard';
 import {AuthGuard} from "./core/guard/auth.guard";
 
 // const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['/authentication/signin']);
-const redirectLoggedInToHome = () => redirectLoggedInTo(['/admin/dashboard/main']);
+// const redirectLoggedInToHome = () => redirectLoggedInTo(['/admin/dashboard/main']);
 
 
 const routes: Routes = [
@@ -141,7 +140,7 @@ const routes: Routes = [
   {
     path: "authentication",
     component: AuthLayoutComponent,
-    ...canActivate(redirectLoggedInToHome),
+    canActivate: [AuthGuard],
     loadChildren: () =>
       import("./authentication/authentication.module").then(
         (m) => m.AuthenticationModule

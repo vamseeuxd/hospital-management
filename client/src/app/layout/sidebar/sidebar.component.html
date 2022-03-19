@@ -3,7 +3,7 @@
   <aside id="leftsidebar" class="sidebar" (mouseenter)="mouseHover($event)" (mouseleave)="mouseOut($event)">
     <!-- Menu -->
     <div class="menu">
-      <ul class="list"
+      <ul class="list" *ngIf="userImg"
         [ngStyle]="{'position' : 'relative', 'max-height' : listMaxHeight+'px', 'max-width' : listMaxWidth+'px'}"
         [perfectScrollbar]>
         <li class="sidebar-user-panel">

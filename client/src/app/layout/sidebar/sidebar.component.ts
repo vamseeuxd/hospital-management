@@ -4,6 +4,7 @@ import {Component, ElementRef, HostListener, Inject, OnDestroy, OnInit, Renderer
 import {ROUTES} from "./sidebar-items";
 import {AuthService} from "src/app/core/service/auth.service";
 import {Role} from "src/app/core/models/role";
+import {NgxSpinnerService} from "ngx-spinner";
 
 @Component({
   selector: "app-sidebar",
@@ -30,6 +31,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     @Inject(DOCUMENT) private document: Document,
     private renderer: Renderer2,
     public elementRef: ElementRef,
+    private spinner: NgxSpinnerService,
     private authService: AuthService,
     private router: Router
   ) {
@@ -99,7 +101,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.authService.currentUser.subscribe(value => {
+    this.spinner.show("wait");
+    this.authService.currentUser.subscribe(async value => {
       if (value && this.authService.currentUserValue) {
         const userRole = this.authService.currentUserValue.role;
         this.userFullName = this.authService.currentUserValue.firstName + " " + this.authService.currentUserValue.lastName;
@@ -117,6 +120,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         } else {
           this.userType = Role.Admin;
         }
+        await this.spinner.hide("wait");
       }
     });
 

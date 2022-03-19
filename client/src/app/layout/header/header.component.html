@@ -68,7 +68,7 @@
           </div>
         </li>
         <!-- #END# Notifications-->
-        <li class="nav-item user_profile" ngbDropdown>
+        <li class="nav-item user_profile" ngbDropdown *ngIf="userImg">
           <a href="#" onClick="return false;" ngbDropdownToggle role="button" class="nav-notification-icons pt-0">
             <img [src]="userImg" class="rounded-circle" width="32" height="32" alt="User">
           </a>

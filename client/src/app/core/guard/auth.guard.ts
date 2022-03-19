@@ -1,41 +1,29 @@
 import {Injectable} from "@angular/core";
-import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot,} from "@angular/router";
+import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from "@angular/router";
 
 import {AuthService} from "../service/auth.service";
-import {Role} from "../models/role";
+import {Auth} from "@angular/fire/auth";
+import {of, switchMap} from "rxjs";
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(private authService: AuthService, private router: Router, private auth: Auth) {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (this.authService.currentUserValue) {
-      const userRole = this.authService.currentUserValue.role;
-      if (route.data.role && route.data.role.indexOf(userRole) === -1) {
-        switch (userRole) {
-          case Role.Admin:
-            this.router.navigate(["/admin/dashboard/main"]);
-            break;
-          case Role.Doctor:
-            this.router.navigate(["/doctor/dashboard"]);
-            break;
-          case Role.Patient:
-            this.router.navigate(["/patient/dashboard"]);
-            break;
-          default:
-            this.authService.logout();
-            this.router.navigate(["/authentication/signin"]);
-            break;
-        }
-        return false;
+    return this.authService.currentUser.pipe(switchMap(value => {
+      console.clear();
+      // console.log(route.data && route.data.role && route.data.role.toLowerCase() === value.role.toLowerCase());
+      if (route.data && route.data.role && value && value.role) {
+        return of(route.data.role.toLowerCase() === value.role.toLowerCase());
+      } else if (route.data && route.data.role) {
+        this.router.navigate(["/authentication/signin"]);
+        return of(false);
+      } else {
+        return of(true);
       }
-      return true;
-    }
-
-    this.router.navigate(["/authentication/signin"]);
-    return false;
+    }));
   }
 }
