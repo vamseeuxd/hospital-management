@@ -29,6 +29,15 @@
         "PROFILE": "Doctor Profile"
       }
     },
+    "DEPARTMENTS": {
+      "TEXT": "Departments",
+      "LIST": {
+        "ALL-DEPARTMENT": "All Departments",
+        "ADD-DEPARTMENT": "Add Department",
+        "EDIT-DEPARTMENT": "Edit Department",
+        "PROFILE": "Department Profile"
+      }
+    },
     "STAFF": {
       "TEXT": "Staff",
       "LIST": {
@@ -63,15 +72,15 @@
         "INVOICE": "Invoice"
       }
     },
-    "DOCTOR": {    
-        "DASHBOARD": "Dashboard",
-        "APPOINTMENTS": "Appointments",
-        "DOCTORS": "Doctors",
-        "PATIENTS": "Patients",
-        "SETTINGS": "Settings",
-        "CHAT": "Chat"
+    "DOCTOR": {
+      "DASHBOARD": "Dashboard",
+      "APPOINTMENTS": "Appointments",
+      "DOCTORS": "Doctors",
+      "PATIENTS": "Patients",
+      "SETTINGS": "Settings",
+      "CHAT": "Chat"
     },
-    "PATIENT": {    
+    "PATIENT": {
       "TEXT": "Patient",
       "DASHBOARD": "Dashboard",
       "APPOINTMENTS": {

@@ -29,6 +29,15 @@
         "PROFILE": "Arztprofil"
       }
     },
+    "DEPARTMENTS": {
+      "TEXT": "Abteilungen",
+      "LIST": {
+        "ALL-DEPARTMENT": "Alle Abteilungen",
+        "ADD-DEPARTMENT": "Abteilung hinzufügen",
+        "EDIT-DEPARTMENT": "Abteilung bearbeiten",
+        "PROFILE": "Abteilungsprofil"
+      }
+    },
     "STAFF": {
       "TEXT": "Mitarbeiterin",
       "LIST": {
@@ -63,7 +72,7 @@
         "INVOICE": "Rechnung"
       }
     },
-    "DOCTOR": {    
+    "DOCTOR": {
         "DASHBOARD": "Dashboard",
         "APPOINTMENTS": "Termine",
         "DOCTORS": "Ärztinnen",
@@ -71,7 +80,7 @@
         "SETTINGS": "die Einstellungen",
         "CHAT": "Plaudern"
     },
-    "PATIENT": {    
+    "PATIENT": {
       "TEXT": "Geduldig",
       "DASHBOARD": "Dashboard",
       "APPOINTMENTS": {

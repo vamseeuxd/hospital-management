@@ -29,6 +29,15 @@
         "PROFILE": "Perfil médico"
       }
     },
+    "DEPARTMENTS": {
+      "TEXT": "Departamentos",
+      "LIST": {
+        "ALL-DEPARTMENT": "Todos los departamentos",
+        "ADD-DEPARTMENT": "Agregar Departamento",
+        "EDIT-DEPARTMENT": "Editar departamento",
+        "PROFILE": "Perfil del Departamento"
+      }
+    },
     "STAFF": {
       "TEXT": "Personal",
       "LIST": {
@@ -63,7 +72,7 @@
         "INVOICE": "Factura"
       }
     },
-    "DOCTOR": {    
+    "DOCTOR": {
         "DASHBOARD": "Tablero",
         "APPOINTMENTS": "Equipo",
         "DOCTORS": "Doctoras",
@@ -71,7 +80,7 @@
         "SETTINGS": "Configuraciones",
         "CHAT": "Charla"
     },
-    "PATIENT": {    
+    "PATIENT": {
       "TEXT": "Paciente",
       "DASHBOARD": "Tablero",
       "APPOINTMENTS": {
