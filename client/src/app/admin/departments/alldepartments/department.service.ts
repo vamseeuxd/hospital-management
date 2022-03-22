@@ -1,67 +1,74 @@
-import { Injectable } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
-import { Department } from "./department.model";
-import { HttpClient, HttpErrorResponse } from "@angular/common/http";
-import { UnsubscribeOnDestroyAdapter } from "src/app/shared/UnsubscribeOnDestroyAdapter";
-@Injectable()
-export class DepartmentService extends UnsubscribeOnDestroyAdapter {
-  private readonly API_URL = "assets/data/department.json";
-  isTblLoading = true;
-  dataChange: BehaviorSubject<Department[]> = new BehaviorSubject<Department[]>([]);
-  // Temporarily stores data from dialogs
-  dialogData: any;
-  constructor(private httpClient: HttpClient) {
-    super();
-  }
-  get data(): Department[] {
-    return this.dataChange.value;
-  }
-  getDialogData() {
-    return this.dialogData;
-  }
-  /** CRUD METHODS */
-  getAllDepartments(): void {
-    this.subs.sink = this.httpClient.get<Department[]>(this.API_URL).subscribe(
-      (data) => {
-        this.isTblLoading = false;
-        this.dataChange.next(data);
-      },
-      (error: HttpErrorResponse) => {
-        this.isTblLoading = false;
-        console.log(error.name + " " + error.message);
-      }
-    );
-  }
-  addDepartment(department: Department): void {
-    this.dialogData = department;
+import {Injectable} from "@angular/core";
+import {BehaviorSubject, Observable} from "rxjs";
+import {Auth} from "@angular/fire/auth";
+import {NgxSpinnerService} from "ngx-spinner";
+import {addDoc, collection, collectionData, deleteDoc, doc, docData, Firestore, orderBy, query, updateDoc} from "@angular/fire/firestore";
+import {shareReplay} from "rxjs/operators";
+import {getTimeStampForCollection} from "../../../data-base/getTimeStampForCollection";
 
-    /*  this.httpClient.post(this.API_URL, department).subscribe(data => {
-      this.dialogData = department;
-      },
-      (err: HttpErrorResponse) => {
-     // error code here
-    });*/
-  }
-  updateDepartment(department: Department): void {
-    this.dialogData = department;
+export interface IDepartment {
+  id?: string;
+  name: string;
+  isDeleted?: boolean;
+  updatedOn?: number;
+  active: boolean;
+  createdOn?: number;
+}
 
-    /* this.httpClient.put(this.API_URL + department.id, department).subscribe(data => {
-      this.dialogData = department;
-    },
-    (err: HttpErrorResponse) => {
-      // error code here
-    }
-  );*/
-  }
-  deleteDepartment(id: number): void {
-    console.log(id);
+@Injectable({
+  providedIn: 'root',
+})
+export class DepartmentService {
+  departmentsList: IDepartment[] = [];
+  isLoadedAction: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  isLoaded$ = this.isLoadedAction.asObservable();
 
-    /*  this.httpClient.delete(this.API_URL + id).subscribe(data => {
-      console.log(id);
-      },
-      (err: HttpErrorResponse) => {
-         // error code here
-      }
-    );*/
+  constructor(
+    private auth: Auth,
+    private spinner: NgxSpinnerService,
+    private firestore: Firestore
+  ) {
+    this.subscribeDepartments().then();
+  }
+
+  async subscribeDepartments() {
+    this.getDepartments()
+      .subscribe((departments) => {
+        // tslint:disable-next-line:variable-name
+        this.departmentsList = departments;
+        this.isLoadedAction.next(true);
+      });
+  }
+
+  getDepartments(): Observable<IDepartment[]> {
+    const departmentsRef = collection(this.firestore, 'departments');
+    const q1 = query(departmentsRef, orderBy('createdOn'));
+    return (
+      collectionData(q1, {idField: 'id'}) as Observable<IDepartment[]>
+    ).pipe(shareReplay());
+  }
+
+  getDepartmentById(id: string): Observable<IDepartment> {
+    const departmentDocRef = doc(this.firestore, `departments/${id}`);
+    return docData(departmentDocRef, {idField: 'id'}) as Observable<IDepartment>;
+  }
+
+  addDepartment(department: IDepartment) {
+    const departmentsRef = collection(this.firestore, 'departments');
+    return addDoc(departmentsRef, {...department, ...getTimeStampForCollection()});
+  }
+
+  deleteDepartment(department: IDepartment) {
+    const departmentDocRef = doc(this.firestore, `departments/${department.id}`);
+    return deleteDoc(departmentDocRef);
+  }
+
+  updateDepartment(department: IDepartment, id: string) {
+    delete department.id;
+    const departmentDocRef = doc(this.firestore, `departments/${id}`);
+    return updateDoc(departmentDocRef, {
+      ...department,
+      ...getTimeStampForCollection(false)
+    });
   }
 }

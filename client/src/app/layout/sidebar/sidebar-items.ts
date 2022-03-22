@@ -440,18 +440,18 @@ export const ROUTES: RouteInfo[] = [
     ],
   },
   {
-    path: "",
+    path: "/admin/departments/all-departments",
     title: "MENUITEMS.DEPARTMENTS.TEXT",
     moduleName: "departments",
     iconType: "material-icons-two-tone",
     icon: "account_tree",
-    class: "menu-toggle",
+    class: "",
     groupTitle: false,
     badge: "",
     badgeClass: "",
     role: ["Admin"],
     submenu: [
-      {
+      /*{
         path: "/admin/departments/all-departments",
         title: "MENUITEMS.DEPARTMENTS.LIST.ALL-DEPARTMENT",
         moduleName: "departments",
@@ -502,7 +502,7 @@ export const ROUTES: RouteInfo[] = [
         badgeClass: "",
         role: [""],
         submenu: [],
-      },
+      },*/
     ],
   },
 

@@ -1,0 +1,8 @@
+:host {
+  .list-container {
+    min-height: calc(100vh - 135px);
+    max-height: calc(100vh - 135px);
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}

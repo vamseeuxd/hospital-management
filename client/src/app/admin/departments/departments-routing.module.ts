@@ -13,11 +13,11 @@ const routes: Routes = [
   },
   {
     path: "add-department",
-    component: AddDepartmentComponent,
+    component: AllDepartmentsComponent,
   },
   {
-    path: "edit-department",
-    component: EditDepartmentComponent,
+    path: "edit-department/:id",
+    component: AllDepartmentsComponent,
   },
   {
     path: "department-profile",
